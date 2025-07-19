@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ruoyi.project.attend.mapper.AttendRuleMapper">
+    
+    <resultMap type="AttendRule" id="AttendRuleResult">
+        <result property="id"                column="id"                 />
+        <result property="ruleName"          column="rule_name"          />
+        <result property="workStartTime"     column="work_start_time"    />
+        <result property="workEndTime"       column="work_end_time"      />
+        <result property="lateMinutes"       column="late_minutes"       />
+        <result property="earlyLeaveMinutes" column="early_leave_minutes"/>
+        <result property="status"            column="status"             />
+        <result property="remark"            column="remark"             />
+        <result property="createBy"          column="create_by"          />
+        <result property="createTime"        column="create_time"        />
+        <result property="updateBy"          column="update_by"          />
+        <result property="updateTime"        column="update_time"        />
+    </resultMap>
+
+    <sql id="selectAttendRuleVo">
+        select id, rule_name, work_start_time, work_end_time, late_minutes, early_leave_minutes, status, remark, create_by, create_time, update_by, update_time
+        from attend_rule
+    </sql>
+
+    <select id="selectAttendRuleList" parameterType="AttendRule" resultMap="AttendRuleResult">
+        <include refid="selectAttendRuleVo"/>
+        <where>  
+            <if test="ruleName != null  and ruleName != ''"> and rule_name like concat('%', #{ruleName}, '%')</if>
+            <if test="status != null  and status != ''"> and status = #{status}</if>
+        </where>
+    </select>
+    
+    <select id="selectAttendRuleById" parameterType="Long" resultMap="AttendRuleResult">
+        <include refid="selectAttendRuleVo"/>
+        where id = #{id}
+    </select>
+    
+    <select id="getActiveRule" resultMap="AttendRuleResult">
+        <include refid="selectAttendRuleVo"/>
+        where status = '0' limit 1
+    </select>
+        
+    <insert id="insertAttendRule" parameterType="AttendRule" useGeneratedKeys="true" keyProperty="id">
+        insert into attend_rule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ruleName != null">rule_name,</if>
+            <if test="workStartTime != null">work_start_time,</if>
+            <if test="workEndTime != null">work_end_time,</if>
+            <if test="lateMinutes != null">late_minutes,</if>
+            <if test="earlyLeaveMinutes != null">early_leave_minutes,</if>
+            <if test="status != null">status,</if>
+            <if test="remark != null">remark,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ruleName != null">#{ruleName},</if>
+            <if test="workStartTime != null">#{workStartTime},</if>
+            <if test="workEndTime != null">#{workEndTime},</if>
+            <if test="lateMinutes != null">#{lateMinutes},</if>
+            <if test="earlyLeaveMinutes != null">#{earlyLeaveMinutes},</if>
+            <if test="status != null">#{status},</if>
+            <if test="remark != null">#{remark},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAttendRule" parameterType="AttendRule">
+        update attend_rule
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="ruleName != null">rule_name = #{ruleName},</if>
+            <if test="workStartTime != null">work_start_time = #{workStartTime},</if>
+            <if test="workEndTime != null">work_end_time = #{workEndTime},</if>
+            <if test="lateMinutes != null">late_minutes = #{lateMinutes},</if>
+            <if test="earlyLeaveMinutes != null">early_leave_minutes = #{earlyLeaveMinutes},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="remark != null">remark = #{remark},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAttendRuleById" parameterType="Long">
+        delete from attend_rule where id = #{id}
+    </delete>
+
+    <delete id="deleteAttendRuleByIds" parameterType="String">
+        delete from attend_rule where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper> 
